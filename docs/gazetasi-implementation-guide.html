@@ -3,29 +3,31 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Si Parashikime - Udhezues Implementimi per Gazeta Si</title>
+    <title>Udhezues Implementimi - Si Parashikime</title>
     <style>
       :root {
-        --bg: #f5f1e8;
         --paper: #fffdf8;
         --ink: #18181b;
         --muted: #52525b;
-        --line: #e7e0d3;
-        --accent: #14532d;
-        --accent-soft: #ecfdf3;
+        --line: #e8ddca;
+        --accent: #0f5132;
+        --accent-soft: #eef8f1;
+        --warn: #92400e;
+        --warn-soft: #fff7ed;
       }
 
       * { box-sizing: border-box; }
+
       body {
         margin: 0;
-        font-family: Georgia, "Times New Roman", serif;
-        background: linear-gradient(180deg, #efe7d8 0%, #f7f4ed 100%);
         color: var(--ink);
+        background: linear-gradient(180deg, #efe6d7 0%, #f8f3ea 100%);
+        font-family: Arial, Helvetica, sans-serif;
       }
 
       .page {
-        max-width: 920px;
-        margin: 40px auto;
+        max-width: 980px;
+        margin: 32px auto;
         background: var(--paper);
         border: 1px solid var(--line);
         border-radius: 24px;
@@ -34,97 +36,109 @@
       }
 
       .hero {
-        padding: 44px 52px 30px;
-        background:
-          radial-gradient(circle at top right, rgba(20, 83, 45, 0.12), transparent 32%),
-          linear-gradient(135deg, #fffaf0, #f7f2e8);
+        padding: 42px 52px 28px;
         border-bottom: 1px solid var(--line);
+        background:
+          radial-gradient(circle at top right, rgba(15, 81, 50, 0.12), transparent 34%),
+          linear-gradient(135deg, #fffaf0, #f5eee2);
       }
 
       .eyebrow {
         display: inline-block;
-        margin-bottom: 12px;
+        margin-bottom: 10px;
         padding: 6px 12px;
         border-radius: 999px;
-        background: rgba(20, 83, 45, 0.08);
+        background: rgba(15, 81, 50, 0.08);
         color: var(--accent);
-        font: 600 12px/1.2 Arial, Helvetica, sans-serif;
+        font-size: 12px;
+        font-weight: 700;
         letter-spacing: 0.16em;
         text-transform: uppercase;
       }
 
       h1 {
-        margin: 0 0 12px;
-        font-size: 38px;
-        line-height: 1.06;
+        margin: 0 0 10px;
+        font: 700 38px/1.08 Georgia, "Times New Roman", serif;
       }
 
       .lead {
         margin: 0;
+        max-width: 760px;
         color: var(--muted);
-        font: 400 18px/1.7 Arial, Helvetica, sans-serif;
-        max-width: 720px;
+        font-size: 17px;
+        line-height: 1.7;
       }
 
       .content {
-        padding: 34px 52px 46px;
+        padding: 28px 52px 44px;
       }
 
       h2 {
-        margin: 34px 0 14px;
-        font-size: 26px;
-        line-height: 1.2;
+        margin: 30px 0 10px;
+        font: 700 25px/1.2 Georgia, "Times New Roman", serif;
       }
 
       h3 {
-        margin: 24px 0 10px;
+        margin: 20px 0 8px;
         font-size: 18px;
         line-height: 1.35;
-        font-family: Arial, Helvetica, sans-serif;
       }
 
       p, li {
+        font-size: 15px;
+        line-height: 1.75;
         color: #27272a;
-        font: 400 15px/1.75 Arial, Helvetica, sans-serif;
       }
 
       ul, ol {
-        margin: 10px 0 18px 24px;
+        margin: 8px 0 16px 22px;
         padding: 0;
       }
 
       li { margin: 4px 0; }
 
-      .callout {
-        margin: 18px 0;
-        padding: 18px 20px;
+      .callout,
+      .warning {
+        margin: 16px 0;
+        padding: 16px 18px;
         border-radius: 16px;
-        border: 1px solid #bfdbca;
+      }
+
+      .callout {
+        border: 1px solid #cce4d5;
         background: var(--accent-soft);
       }
 
-      .callout strong {
+      .warning {
+        border: 1px solid #f3d6ae;
+        background: var(--warn-soft);
+      }
+
+      .label {
         display: block;
         margin-bottom: 6px;
-        font: 700 13px/1.3 Arial, Helvetica, sans-serif;
+        font-size: 12px;
+        font-weight: 700;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        color: var(--accent);
       }
+
+      .callout .label { color: var(--accent); }
+      .warning .label { color: var(--warn); }
 
       code {
         padding: 0.14rem 0.35rem;
         border-radius: 6px;
         background: #f4f4f5;
-        font-family: "Courier New", monospace;
+        font-family: Consolas, "Courier New", monospace;
         font-size: 0.92em;
       }
 
       pre {
-        margin: 14px 0 20px;
+        margin: 12px 0 18px;
         padding: 16px 18px;
-        border-radius: 14px;
         border: 1px solid #e4e4e7;
+        border-radius: 14px;
         background: #fafafa;
         overflow-x: auto;
       }
@@ -134,15 +148,15 @@
         background: transparent;
       }
 
-      .two-col {
+      .grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 20px;
-        margin: 18px 0;
+        gap: 18px;
+        margin: 16px 0;
       }
 
       .panel {
-        padding: 18px;
+        padding: 16px 18px;
         border-radius: 16px;
         border: 1px solid var(--line);
         background: #fffdfa;
@@ -153,18 +167,16 @@
       }
 
       .footer-note {
-        margin-top: 36px;
-        padding-top: 20px;
+        margin-top: 28px;
+        padding-top: 18px;
         border-top: 1px solid var(--line);
         color: #71717a;
-        font: 400 13px/1.7 Arial, Helvetica, sans-serif;
+        font-size: 13px;
+        line-height: 1.7;
       }
 
       @media print {
-        body {
-          background: #ffffff;
-        }
-
+        body { background: #fff; }
         .page {
           margin: 0;
           border: 0;
@@ -173,22 +185,22 @@
         }
       }
 
-      @media (max-width: 720px) {
+      @media (max-width: 760px) {
         .page {
           margin: 0;
           border-radius: 0;
         }
 
         .hero, .content {
-          padding: 28px 22px;
+          padding: 24px 20px;
         }
 
-        .two-col {
+        .grid {
           grid-template-columns: 1fr;
         }
 
         h1 {
-          font-size: 31px;
+          font-size: 32px;
         }
       }
     </style>
@@ -197,63 +209,79 @@
     <main class="page">
       <section class="hero">
         <div class="eyebrow">Si Parashikime</div>
-        <h1>Udhezues implementimi per Gazeta Si</h1>
+        <h1>Udhezues implementimi</h1>
         <p class="lead">
-          Ky dokument eshte pergatitur si handoff praktik per ekipin teknik te Gazeta Si:
-          si te marrin kodin, si te lidhen me databazen e tyre, si te bejne deploy,
-          dhe si te arrijne nje eksperience me te njejtin account mes WordPress dhe prediction market.
+          Ky dokument tregon cfare duhet bere realisht per ta vene projektin ne pune:
+          si te lidhni databazen, si te jepni admin access, si te beni deploy, dhe si te arrini login me te njejtin account mes WordPress dhe market-it.
         </p>
       </section>
 
       <section class="content">
-        <h2>1. Si te ndahet repo-ja me IT</h2>
-        <p>Repo-ja aktuale eshte:</p>
-        <pre><code>https://github.com/po0xtirana/si-parashikime</code></pre>
+        <h2>1. Qellimi</h2>
+        <p>
+          Qellimi eshte qe projekti i prediction market te jeton ne <code>market.gazetasi.al</code>,
+          ndersa faqja kryesore te mbetet ne <code>www.gazetasi.al</code>, me te njejtin account per perdoruesit.
+        </p>
+
+        <h2>2. Cfare ju duhet para se te filloni</h2>
         <ol>
-          <li>Hape repo-n ne GitHub.</li>
-          <li>Shko te <code>Settings -> Collaborators and teams</code>.</li>
-          <li>Shto personin e IT me username ose email.</li>
-          <li>Jepi akses <code>Write</code> ose <code>Admin</code>.</li>
+          <li>Akses ne repo: <code>https://github.com/po0xtirana/si-parashikime</code></li>
+          <li>Nje projekt i ri ne Supabase</li>
+          <li>Nje subdomain si <code>market.gazetasi.al</code></li>
+          <li>Akses ne WordPress</li>
+          <li>Nje plugin OAuth ose OpenID Connect server ne WordPress per SSO</li>
         </ol>
 
-        <div class="callout">
-          <strong>Rekomandim</strong>
-          Per handoff me afat me te gjate, repo-ja duhet transferuar ne nje account ose organizate te Gazeta Si,
-          ne menyre qe pronari teknik te jete institucioni dhe jo nje profil personal.
-        </div>
-
-        <h2>2. Stack-u aktual</h2>
+        <h2>3. Skedaret qe duhen ndryshuar</h2>
         <ul>
-          <li><code>React + Vite + TypeScript</code></li>
-          <li><code>Tailwind + shadcn/ui</code></li>
-          <li><code>Supabase</code> per databaze, auth, RLS dhe SQL functions</li>
+          <li><code>.env</code></li>
+          <li><code>supabase/config.toml</code></li>
+          <li><code>src/integrations/supabase/types.ts</code></li>
+        </ul>
+        <p>Nese do implementoni SSO me WordPress, do preken edhe:</p>
+        <ul>
+          <li><code>src/pages/Auth.tsx</code></li>
+          <li><code>src/hooks/useAuth.tsx</code></li>
+          <li><code>src/App.tsx</code></li>
         </ul>
 
-        <h2>3. Si ndryshohen databaza dhe kredencialet</h2>
-        <h3>3.1 Variablat e ambientit</h3>
-        <p>Kopjoni <code>.env.example</code> ne <code>.env</code> dhe plotesoni:</p>
+        <h2>4. Nisja lokale</h2>
+        <pre><code>git clone https://github.com/po0xtirana/si-parashikime.git
+cd si-parashikime
+npm install
+npm run dev</code></pre>
+
+        <h2>5. Krijimi i Supabase-it te ri</h2>
+        <p>Ne Supabase krijoni nje projekt te ri dhe merrni keto vlera:</p>
+        <ul>
+          <li><code>Project URL</code></li>
+          <li><code>Publishable key</code></li>
+          <li><code>Project ref</code></li>
+        </ul>
+
+        <div class="warning">
+          <span class="label">Mos e beni</span>
+          Mos vendosni ne frontend <code>sb_secret_*</code> ose <code>service_role</code>. Keto mbahen vetem ne backend.
+        </div>
+
+        <h2>6. Mbushja e `.env`</h2>
+        <p>Kopjoni <code>.env.example</code> ne <code>.env</code> dhe vendosni:</p>
         <pre><code>VITE_SUPABASE_URL="https://YOUR_PROJECT_REF.supabase.co"
 VITE_SUPABASE_PUBLISHABLE_KEY="YOUR_PUBLISHABLE_KEY"</code></pre>
 
-        <div class="callout">
-          <strong>Kujdes</strong>
-          Mos vendosni asnjehere <code>sb_secret_*</code> ose <code>service_role</code> ne skedaret
-          <code>VITE_*</code>. Cdo vlere me <code>VITE_</code> ekspozohet ne frontend.
-        </div>
+        <h2>7. Ndryshimi i `supabase/config.toml`</h2>
+        <pre><code>project_id = "REAL_PROJECT_REF"</code></pre>
 
-        <h3>3.2 Supabase CLI</h3>
-        <p>Ne <code>supabase/config.toml</code> vendosni project ref-in real:</p>
-        <pre><code>project_id = "your-supabase-project-ref"</code></pre>
-        <p>Pastaj ekzekutoni:</p>
+        <h2>8. Aplikimi i databazes</h2>
         <pre><code>npx supabase login
 npx supabase link --project-ref YOUR_PROJECT_REF
 npx supabase db push</code></pre>
+        <p>Kjo krijon tabelat, funksionet dhe migrimet qe jane ne <code>supabase/migrations/</code>.</p>
 
-        <h3>3.3 Rigjenerimi i tipeve</h3>
+        <h2>9. Rigjenerimi i tipeve</h2>
         <pre><code>npx supabase gen types typescript --linked --schema public &gt; src/integrations/supabase/types.ts</code></pre>
 
-        <h2>4. Cfare ruhet ne databaze</h2>
-        <div class="two-col">
+        <div class="grid">
           <div class="panel">
             <h3>Tabelat kryesore</h3>
             <ul>
@@ -273,67 +301,88 @@ npx supabase db push</code></pre>
           </div>
         </div>
 
-        <h2>5. Rolet</h2>
-        <p>Aktualisht roli <code>admin</code> kontrollohet nga tabela <code>user_roles</code>.</p>
+        <h2>10. Si krijohet admini i pare</h2>
+        <ol>
+          <li>Krijoni nje account normal ne website.</li>
+          <li>Hapni Supabase SQL Editor.</li>
+          <li>Ekzekutoni:</li>
+        </ol>
+        <pre><code>select id, email
+from auth.users
+order by created_at desc;</code></pre>
+        <p>Merrni <code>id</code> e user-it dhe jepini rolin:</p>
         <pre><code>insert into public.user_roles (user_id, role)
-values ('SUPABASE_AUTH_USER_ID', 'admin')
+values ('USER_ID_KETU', 'admin')
 on conflict do nothing;</code></pre>
-        <p>
-          Rekomandohet qe Gazeta Si te shtoje edhe nje rol <code>editor</code>, qe te krijoje dhe mbylle tregje
-          pa pasur akses te plote administrativ.
-        </p>
 
-        <h2>6. Deploy i rekomanduar</h2>
-        <p>Arkitektura e sugjeruar:</p>
+        <h2>11. Si perdoret paneli admin</h2>
+        <p>Paneli ndodhet te <code>/admin</code>. Nga aty mund te krijoni tregje dhe te vendosni:</p>
         <ul>
-          <li><code>www.gazetasi.al</code> per website-in editorial ne WordPress</li>
+          <li>titull</li>
+          <li>pershkrim</li>
+          <li>kategori</li>
+          <li>date mbylljeje</li>
+          <li>vlera fillestare Po / Jo</li>
+          <li>image URL</li>
+          <li>article URL</li>
+        </ul>
+
+        <h2>12. Deploy</h2>
+        <p>Rekomandohet:</p>
+        <ul>
+          <li><code>www.gazetasi.al</code> per WordPress</li>
           <li><code>market.gazetasi.al</code> per prediction market</li>
         </ul>
-        <p>Opsione te pershtatshme deploy:</p>
+        <p>Settings tipike te deploy-it:</p>
         <ul>
-          <li>Vercel</li>
-          <li>Netlify</li>
-          <li>Cloudflare Pages</li>
-          <li>Nginx + VPS</li>
+          <li><code>Build command</code>: <code>npm run build</code></li>
+          <li><code>Output directory</code>: <code>dist</code></li>
         </ul>
 
-        <h2>7. Si behen te njejtat llogari ne WordPress dhe market</h2>
+        <h2>13. Si behet login me te njejtin account</h2>
         <p>
-          Synimi eshte qe nje perdorues i loguar ne <code>www.gazetasi.al</code> te hape
-          <code>market.gazetasi.al</code> pa u loguar perseri.
+          Synimi eshte qe nje user i loguar ne <code>www.gazetasi.al</code>
+          te hyje ne <code>market.gazetasi.al</code> pa login te dyte.
         </p>
 
         <div class="callout">
-          <strong>Qasja e duhur</strong>
-          Mos u perpiqni te ndani cookie-t e WordPress direkt me aplikacionin React.
-          Rruga e shendetshme eshte <code>OAuth / OpenID Connect</code>, me WordPress si Identity Provider.
+          <span class="label">Rruga e duhur</span>
+          Perdorni WordPress si burim identiteti dhe <code>OAuth / OpenID Connect</code> per login.
+          Mos ndani cookie-t e WordPress direkt me aplikacionin React.
         </div>
 
-        <h3>7.1 Rrjedha e rekomanduar</h3>
+        <h2>14. Cfare duhet bere ne WordPress</h2>
         <ol>
-          <li>WordPress ben autentikimin kryesor.</li>
-          <li>Prediction market ofron butonin <code>Hyr me Gazeta Si</code>.</li>
-          <li>Perdoruesi ridrejtohet te WordPress me <code>Authorization Code + PKCE</code>.</li>
-          <li>Nese ai eshte tashme i loguar ne Gazeta Si, ridrejtimi mbyllet menjehere.</li>
-          <li>Market app krijon sesionin e vet dhe perdoruesi hyn pa friction.</li>
+          <li>Instaloni nje plugin qe e ben WordPress OAuth/OIDC server.</li>
+          <li>Krijoni nje client per market-in.</li>
+          <li>Vendosni <code>redirect URI</code>:</li>
+        </ol>
+        <pre><code>https://market.gazetasi.al/auth/callback</code></pre>
+        <p>Pastaj ruani keto vlera:</p>
+        <ul>
+          <li><code>client_id</code></li>
+          <li><code>client_secret</code></li>
+          <li><code>issuer</code></li>
+          <li><code>authorize_url</code></li>
+          <li><code>token_url</code></li>
+          <li><code>userinfo_url</code></li>
+        </ul>
+        <p>Scopes minimale:</p>
+        <pre><code>openid email profile</code></pre>
+
+        <h2>15. Cfare duhet bere ne aplikacion</h2>
+        <ol>
+          <li>Hiqni login-in klasik nga UI ose fsheheni.</li>
+          <li>Shtoni butonin <code>Hyr me Gazeta Si</code>.</li>
+          <li>Shtoni route <code>/auth/callback</code>.</li>
+          <li>Ne callback merrni <code>code</code> nga WordPress.</li>
+          <li>Shkembeni <code>code</code> me token.</li>
+          <li>Merrni profilin e user-it.</li>
+          <li>Gjeni ose krijoni user-in perkates ne Supabase.</li>
+          <li>Krijoni sesionin ne market.</li>
         </ol>
 
-        <h3>7.2 Cfare duhet ne WordPress</h3>
-        <ul>
-          <li>plugin OAuth/OIDC server</li>
-          <li>endpoints per <code>authorize</code>, <code>token</code> dhe idealisht <code>userinfo</code></li>
-          <li><code>client_id</code>, <code>redirect_uri</code> dhe <code>scopes</code></li>
-        </ul>
-
-        <h3>7.3 Cfare duhet ne prediction market</h3>
-        <ul>
-          <li>faqe login me butonin <code>Hyr me Gazeta Si</code></li>
-          <li>route callback si <code>/auth/callback</code></li>
-          <li>mapim i identitetit WordPress me user-in e market-it</li>
-          <li>krijim automatik i profilit ne hyrjen e pare</li>
-        </ul>
-
-        <h3>7.4 Tabele e rekomanduar per mapim identitetesh</h3>
+        <h2>16. Tabela e mapimit mes WordPress dhe Supabase</h2>
         <pre><code>create table if not exists public.external_accounts (
   id uuid primary key default gen_random_uuid(),
   provider text not null,
@@ -342,65 +391,85 @@ on conflict do nothing;</code></pre>
   created_at timestamptz not null default now(),
   unique (provider, external_user_id)
 );</code></pre>
+        <p>Kjo lidh user-in e WordPress me user-in e market-it.</p>
 
-        <h2>8. Faza e implementimit</h2>
-        <h3>Faza 1: Marrja ne dore e projektit</h3>
+        <h2>17. Backend i nevojshem per SSO</h2>
+        <p>Per SSO duhet nje endpoint backend, p.sh.:</p>
+        <pre><code>https://market.gazetasi.al/api/auth/wordpress/callback</code></pre>
+        <p>Ky endpoint ben:</p>
         <ol>
-          <li>Klononi repo-n.</li>
-          <li>Krijoni <code>.env</code> nga <code>.env.example</code>.</li>
-          <li>Krijoni nje projekt te ri Supabase.</li>
-          <li>Lidhni projektin dhe aplikoni migrimet.</li>
-          <li>Rigjeneroni <code>types.ts</code>.</li>
-          <li>Nisni aplikacionin me <code>npm run dev</code>.</li>
+          <li><code>code -&gt; token</code></li>
+          <li>merr profilin e user-it nga WordPress</li>
+          <li>gjen ose krijon user ne Supabase</li>
+          <li>ruan mapimin ne <code>external_accounts</code></li>
+          <li>kthen user-in ne aplikacion me sesion aktiv</li>
         </ol>
 
-        <h3>Faza 2: Integrimi ne infrastrukturen e Gazeta Si</h3>
+        <div class="warning">
+          <span class="label">Sekret backend</span>
+          Per kete hap do duhet <code>SUPABASE_SERVICE_ROLE_KEY</code>. Ky key nuk futet kurre ne frontend.
+        </div>
+
+        <h2>18. Skedaret qe pritet te preken per SSO</h2>
+        <ul>
+          <li><code>src/pages/Auth.tsx</code></li>
+          <li><code>src/hooks/useAuth.tsx</code></li>
+          <li><code>src/App.tsx</code></li>
+        </ul>
+        <p>Me shume gjasa do shtohen edhe nje callback page dhe nje endpoint backend.</p>
+
+        <h2>19. Rrjedha e punes</h2>
+        <h3>Faza 1</h3>
+        <ol>
+          <li>Lidhni Supabase-in e ri.</li>
+          <li>Aplikoni migrimet.</li>
+          <li>Verifikoni homepage.</li>
+          <li>Krijoni nje admin.</li>
+          <li>Verifikoni <code>/admin</code>.</li>
+        </ol>
+
+        <h3>Faza 2</h3>
         <ol>
           <li>Deploy ne <code>market.gazetasi.al</code>.</li>
-          <li>Vendosja e env vars ne ambientin e deploy-it.</li>
-          <li>Krijimi i nje admini fillestar.</li>
-          <li>Verifikimi i panelit <code>/admin</code>.</li>
+          <li>Vendosni env vars ne prodhim.</li>
+          <li>Krijoni tregje prove.</li>
         </ol>
 
-        <h3>Faza 3: SSO me WordPress</h3>
+        <h3>Faza 3</h3>
         <ol>
-          <li>Zgjedhja e plugin-it OAuth/OIDC ne WordPress.</li>
-          <li>Krijimi i klientit per market-in.</li>
-          <li>Shtimi i callback route ne aplikacion.</li>
-          <li>Krijimi i tabeles <code>external_accounts</code>.</li>
-          <li>Ndryshimi i UX se login-it qe te kaloje nga Gazeta Si.</li>
+          <li>Konfiguroni plugin-in OAuth/OIDC ne WordPress.</li>
+          <li>Shtoni callback route.</li>
+          <li>Shtoni tabelen <code>external_accounts</code>.</li>
+          <li>Ndertoni backend callback.</li>
+          <li>Testoni hyrjen pa login te dyte.</li>
         </ol>
 
-        <h2>9. Komandat baze</h2>
-        <pre><code>npm install
-npm run dev
-npm run build
-npm test
+        <h2>20. Kontrolli final</h2>
+        <ol>
+          <li>A punon homepage?</li>
+          <li>A hapen tregjet?</li>
+          <li>A funksionon basti?</li>
+          <li>A punon <code>/admin</code>?</li>
+          <li>A funksionon <code>article_url</code>?</li>
+          <li>A funksionon aktiviteti live?</li>
+          <li>A funksionon login-i?</li>
+          <li>A funksionon SSO?</li>
+          <li>A nuk ka sekrete ne repo?</li>
+        </ol>
 
-npx supabase link --project-ref YOUR_PROJECT_REF
-npx supabase db push
-npx supabase gen types typescript --linked --schema public &gt; src/integrations/supabase/types.ts</code></pre>
-
-        <h2>10. Cfare nuk duhet komituar</h2>
+        <h2>21. Gjerat qe nuk duhen futur ne Git</h2>
         <ul>
           <li><code>.env</code></li>
           <li><code>sb_secret_*</code></li>
           <li><code>service_role</code></li>
           <li><code>SUPABASE_ACCESS_TOKEN</code></li>
-          <li>WordPress client secrets</li>
+          <li><code>client_secret</code> te WordPress</li>
           <li>SMTP credentials</li>
         </ul>
 
-        <h2>11. Rekomandim final</h2>
-        <p>
-          Modeli me i qendrueshem per Gazeta Si eshte:
-          WordPress si burim identiteti, Supabase si datastore dhe sistem rolesh i prediction market,
-          dhe <code>OAuth/OIDC</code> si ura qe i ben te dy produktet te duken si nje eksperience e vetme.
-        </p>
-
         <p class="footer-note">
-          Dokument i pergatitur per handoff teknik. Repo-ja eshte e strukturuar qe ekipi i Gazeta Si
-          te fuse databazen, kredencialet dhe integrimin e vet pa ekspozuar informacion privat nga ambienti lokal.
+          Ky dokument eshte shkruar si udhezues praktik implementimi. Qellimi eshte qe projekti te mund te merret,
+          te lidhet me infrastrukturen e re dhe te zgjerohet me SSO pa paqartesi ne hapat baze.
         </p>
       </section>
     </main>

@@ -1,84 +1,138 @@
-# Si Parashikime: Handoff dhe Implementim per Gazeta Si
+# Udhezues Implementimi: Si Parashikime per Gazeta Si
 
-## 1. Si te ndahet repo-ja me IT
+Ky dokument shpjegon hap pas hapi si te merret projekti, si te lidhet me databazen e re, si te behet deploy, dhe si te implementohet hyrja me te njejtin account mes `www.gazetasi.al` dhe `market.gazetasi.al`.
 
-Repo-ja aktuale eshte publikuar ne GitHub si nje repo private ne profilin e pronarit:
+Ky dokument eshte shkruar qe te jete praktik. Qellimi nuk eshte teoria, por cfare duhet bere realisht.
 
-- `https://github.com/po0xtirana/si-parashikime`
+## 1. Cfare po implementoni
 
-Menyra me e mire per ta ndare me ekipin e Gazeta Si:
-
-1. Hape repo-n ne GitHub.
-2. Shko te `Settings -> Collaborators and teams`.
-3. Shto email-in ose username-in e personit te IT.
-4. Jepi akses `Write` ose `Admin`, sipas nevojes.
-
-Nese repo-ja duhet t'i kaloje organizates se Gazeta Si:
-
-1. Krijoni nje organizate ose nje repo te re nen account-in e organizates.
-2. Transferoni repo-n:
-   - `Settings -> General -> Transfer`
-3. Si emer destinacioni rekomandohet:
-   - `gazetasi/si-parashikime`
-
-## 2. Cfare eshte ky projekt
-
-Ky projekt eshte nje aplikacion prediction market i ndertuar me:
+Ky projekt eshte nje prediction market i ndertuar me:
 
 - `React + Vite + TypeScript`
 - `Tailwind + shadcn/ui`
-- `Supabase` per databaze, auth, RLS dhe logjike SQL
+- `Supabase` per databaze, role, auth dhe SQL functions
 
-Funksionalitetet kryesore aktuale:
+Funksionalitetet kryesore:
 
-- regjistrim / hyrje perdoruesish
-- tregje me `Po / Jo`
-- vendosje bastesh
-- feed i aktivitetit live
-- panel admin per krijimin dhe mbylljen e tregjeve
-- link opsional me artikullin e Gazeta Si ne cdo treg
+- faqja kryesore me tregje `Po / Jo`
+- tregje individuale me mundesi basti
+- panel admin te ` /admin `
+- aktivitet live
+- artikull i lidhur me tregun
+- role `admin`
 
-## 3. Cfare duhet te ndryshoje Gazeta Si
+## 2. Cfare ju duhet para se te filloni
 
-Per implementim real, Gazeta Si duhet te fuse te dhenat e veta ne vend te atyre lokale:
+Duhet t'i keni gati keto:
 
-### 3.1 Variablat e ambientit
+1. akses ne repo:
+   - `https://github.com/po0xtirana/si-parashikime`
+2. nje projekt te ri `Supabase`
+3. nje domain ose subdomain:
+   - rekomandohet `market.gazetasi.al`
+4. akses ne WordPress te `www.gazetasi.al`
+5. nje plugin `OAuth` ose `OpenID Connect` server ne WordPress, nese do SSO
 
-Skedari qe duhet kopjuar:
+## 3. Cilet skedare duhen ndryshuar
+
+Skedaret kryesore qe duhen prekur kur e merrni projektin:
+
+- `.env`
+- `supabase/config.toml`
+- `src/integrations/supabase/types.ts`
+
+Nese do implementoni SSO me WordPress, do duhen prekur edhe:
+
+- `src/pages/Auth.tsx`
+- `src/hooks/useAuth.tsx`
+- `src/App.tsx`
+
+Me shume gjasa do shtohet edhe nje endpoint callback ne backend.
+
+## 4. Hapi 1: Shkarkoni dhe nisni projektin
+
+Ne terminal:
+
+```powershell
+git clone https://github.com/po0xtirana/si-parashikime.git
+cd si-parashikime
+npm install
+```
+
+Per ta nisur lokalisht:
+
+```powershell
+npm run dev
+```
+
+Per build:
+
+```powershell
+npm run build
+```
+
+Per test:
+
+```powershell
+npm test
+```
+
+## 5. Hapi 2: Krijoni dhe lidhni Supabase-in e ri
+
+Krijoni nje projekt te ri ne `Supabase`.
+
+Pastaj merrni keto vlera nga dashboard:
+
+1. `Project URL`
+2. `Publishable key`
+3. `Project ref`
+
+Mos perdorni ne frontend:
+
+- `sb_secret_*`
+- `service_role`
+
+Keto duhen vetem per backend ose scripts te brendshme.
+
+## 6. Hapi 3: Mbushni `.env`
+
+Kopjoni:
 
 - `.env.example` -> `.env`
 
-Vlerat qe duhen vendosur:
+Pastaj ndryshoni vlerat:
 
 ```env
 VITE_SUPABASE_URL="https://YOUR_PROJECT_REF.supabase.co"
 VITE_SUPABASE_PUBLISHABLE_KEY="YOUR_PUBLISHABLE_KEY"
 ```
 
-Kujdes:
+Rregull i rendesishem:
 
-- mos vendosni kurre `sb_secret_*` ne `VITE_*`
-- cdo gje me `VITE_` del ne frontend dhe konsiderohet publike
+- cdo gje qe fillon me `VITE_` shkon ne frontend
+- pra aty futen vetem vlera publike
 
-### 3.2 Lidhja e projektit Supabase per CLI
+## 7. Hapi 4: Ndryshoni `supabase/config.toml`
 
-Skedari:
+Hapni skedarin:
 
 - `supabase/config.toml`
 
-Vlera qe duhet ndryshuar:
+Ndryshoni:
 
 ```toml
 project_id = "your-supabase-project-ref"
 ```
 
-### 3.3 Migrimet e databazes
+me:
 
-Repo-ja permban migrimet SQL ne:
+```toml
+project_id = "REAL_PROJECT_REF"
+```
 
-- `supabase/migrations/`
+## 8. Hapi 5: Aplikoni databazen
 
-Per t'i aplikuar ne projektin e Gazeta Si:
+Ne terminal ekzekutoni:
 
 ```powershell
 npx supabase login
@@ -86,193 +140,204 @@ npx supabase link --project-ref YOUR_PROJECT_REF
 npx supabase db push
 ```
 
-### 3.4 Rigjenerimi i tipeve TypeScript
+Kjo ben:
 
-Pas migrimeve:
+1. lidh projektin lokal me Supabase-in e ri
+2. ekzekuton te gjitha SQL migrations qe jane ne repo
+3. krijon tabelat, funksionet dhe ndryshimet e nevojshme
+
+Migrimet ndodhen ne:
+
+- `supabase/migrations/`
+
+## 9. Hapi 6: Rigjeneroni tipet TypeScript
+
+Pas migrimeve, ekzekutoni:
 
 ```powershell
 npx supabase gen types typescript --linked --schema public > src/integrations/supabase/types.ts
 ```
 
-## 4. Struktura e databazes qe duhet kuptuar
+Kjo siguron qe frontend-i te perdore tipet e sakta sipas databazes reale.
 
-Tabelat kryesore jane:
+## 10. Cfare ka ne databaze
+
+Tabelat kryesore:
 
 - `profiles`
-  - te dhenat publike te perdoruesit
+  - te dhenat baze te perdoruesit
 - `user_roles`
   - role si `admin`
 - `markets`
-  - tregjet e prediction market
+  - tregjet
 - `bets`
-  - bastet e perdoruesve
+  - bastet
 - `price_history`
-  - historia e pikave te grafikut
+  - te dhenat e grafikut
 
 Kolona te rendesishme:
 
 - `markets.article_url`
   - link opsional drejt artikullit te Gazeta Si
 - `bets.is_public`
-  - percakton nese emri i perdoruesit del te aktiviteti live
+  - nese emri i perdoruesit shfaqet te aktiviteti live
 
-## 5. Si krijohen adminat / editorat
+## 11. Hapi 7: Krijoni adminin e pare
 
-Aktualisht aplikacioni ka kontroll me role permes tabeles `user_roles`.
+Paneli admin ndodhet te:
 
-Per te bere nje perdorues admin:
+- `/admin`
+
+Qe nje user ta hape kete faqe, duhet te kete rolin `admin`.
+
+Rrjedha e sakte:
+
+1. krijoni nje account normal ne website
+2. hapni `Supabase SQL Editor`
+3. ekzekutoni kete query per te gjetur user-in:
+
+```sql
+select id, email
+from auth.users
+order by created_at desc;
+```
+
+4. merrni `id` e user-it
+5. jepini rolin `admin`:
 
 ```sql
 insert into public.user_roles (user_id, role)
-values ('SUPABASE_AUTH_USER_ID', 'admin')
+values ('USER_ID_KETU', 'admin')
 on conflict do nothing;
 ```
 
-Rekomandim per Gazeta Si:
+Pas kesaj, ai user mund te hape:
 
-- te shtohet edhe roli `editor`
-- `editor` te lejohet:
-  - krijim tregjesh
-  - modifikim tregjesh
-  - mbyllje / zgjidhje tregjesh
-- `admin` te mbetet per menaxhim rolesh dhe konfigurime me sensitive
+- `https://market.gazetasi.al/admin`
 
-## 6. Si behet deploy ne domenin e Gazeta Si
+ose lokalisht:
 
-Rekomandim:
+- `http://localhost:8080/admin`
 
-- website aktual: `www.gazetasi.al`
-- prediction market: `market.gazetasi.al`
+## 12. Si perdoret paneli admin
 
-Pse ky variant eshte i mire:
+Nga `/admin` mund te:
 
-- branding i qarte
-- ndarje e paster teknike
-- SSO me i thjeshte
-- mund te kete deploy dhe scaling me vete
+- krijoni tregje
+- vendosni titullin
+- pershkrimin
+- kategorine
+- daten e mbylljes
+- vleren fillestare `Po / Jo`
+- nje imazh, nese deshironi
+- nje `article_url`, nese deshironi artikull te lidhur
 
-Opsione deploy:
+Pra workflow editorial eshte:
+
+1. botohet nje artikull ne Gazeta Si
+2. krijohet nje treg ne `/admin`
+3. artikulli lidhet me `article_url`
+4. tregu del ne homepage dhe ne faqen individuale
+
+## 13. Si behet deploy
+
+Rekomandohet:
+
+- `www.gazetasi.al` te mbetet WordPress
+- `market.gazetasi.al` te jete prediction market
+
+Settings e deploy-it:
+
+- `Build command`: `npm run build`
+- `Output directory`: `dist`
+
+Variablat e ambientit qe duhen vendosur edhe ne platformen e deploy-it:
+
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_PUBLISHABLE_KEY`
+
+Opsione te mira per deploy:
 
 1. `Vercel`
 2. `Netlify`
 3. `Cloudflare Pages`
-4. `Nginx + VPS`
+4. `VPS me Nginx`
 
-Per shumicen e rasteve:
+## 14. Si behet hyrja me te njejtin account me WordPress
 
-- frontend-i deploy ne `market.gazetasi.al`
-- Supabase hostohet vec
+Objektivi:
 
-## 7. Si ta bejne WordPress dhe prediction market me te njejtin account
+- user logon ne `www.gazetasi.al`
+- pastaj hap `market.gazetasi.al`
+- dhe futet pa login te dyte
 
-Objektivi i Gazeta Si eshte:
+### Cfare nuk duhet bere
 
-- nese nje perdorues eshte i loguar ne `www.gazetasi.al`
-- kur hap `market.gazetasi.al`
-- te mos kerkohet login i dyte
+Mos u mundoni te ndani cookie-te e WordPress direkt me React app.
 
-Kjo **nuk** duhet bere duke ndare cookie-t e WordPress direkt me aplikacionin React.
+Kjo krijon probleme me:
 
-Rruga e rekomanduar eshte:
+- sigurine
+- sesionet
+- skadimin e login-it
+- mirembajtjen afatgjate
 
-### 7.1 WordPress si Identity Provider
+### Qasja e sakte
 
-WordPress duhet te sillet si burimi kryesor i identitetit.
+Përdorni:
 
-Sugjerim plugin-esh:
+- `WordPress` si burim kryesor i identitetit
+- `OAuth 2.0 / OpenID Connect`
+- `market.gazetasi.al` si klient qe ben login te WordPress
 
-- OpenID Connect / OAuth server plugin per WordPress
-- qellimi eshte qe WordPress te nxjerre login me `Authorization Code + PKCE`
+## 15. Implementimi i sakte i SSO
 
-### 7.2 Prediction market si aplikacion klient
+### Ne WordPress duhen bere keto
 
-Prediction market duhet te kete:
+1. instaloni nje plugin qe e ben WordPress `OAuth/OIDC Server`
+2. krijoni nje client per market-in
+3. vendosni `redirect URI`:
 
-- buton `Hyr me Gazeta Si`
-- route callback, p.sh.:
-  - `/auth/callback`
+```text
+https://market.gazetasi.al/auth/callback
+```
 
-Kur perdoruesi klikon:
+4. aktivizoni `scopes`:
 
-1. dergohet te WordPress per autentikim
-2. nese eshte tashme i loguar ne Gazeta Si, WordPress e kthen menjehere
-3. market app krijon sesionin e vet lokal
-4. perdoruesi hyn pa vene re nje login te dyte
+```text
+openid email profile
+```
 
-Ky eshte SSO i sakte.
+5. ruani keto vlera:
 
-### 7.3 Cfare duhet te ndryshoje ne aplikacion
+- `client_id`
+- `client_secret`
+- `issuer`
+- `authorize_url`
+- `token_url`
+- `userinfo_url` nese ekziston
 
-Aktualisht aplikacioni perdor Supabase Auth me email/password.
+### Ne aplikacion duhen bere keto
 
-Per SSO me WordPress duhen bere keto ndryshime:
+Duhet ndryshuar login-i aktual.
 
-1. te hiqet ose te fshihet regjistrimi klasik me email/password
-2. te shtohet `Login with Gazeta Si`
-3. te shtohet nje route callback:
+Aktualisht projekti perdor login me email/password ne Supabase.
+
+Per versionin final me Gazeta Si duhet:
+
+1. te hiqet regjistrimi klasik ose te fshihet nga UI
+2. te shtohet butoni `Hyr me Gazeta Si`
+3. te shtohet route:
    - `/auth/callback`
-4. te krijohet nje mekanizem per mapim:
-   - `wordpress_user_id` -> `supabase_user_id`
-5. ne hyrjen e pare te krijohet automatikisht `profile`
-6. logout te behet i sinkronizuar ose te menaxhohet qarte
+4. ne callback te merret `code` nga WordPress
+5. ky `code` te shkembyhet me token te WordPress
+6. te merret profili i user-it nga WordPress
+7. te krijohet ose gjendet user-i perkates ne Supabase
+8. te krijohet sesion ne market
 
-### 7.4 Dy menyra implementimi
+## 16. Si lidhet user-i i WordPress me user-in e market-it
 
-#### Variante e rekomanduar praktikisht
-
-WordPress eshte burim identiteti, por prediction market mban profilin dhe te dhenat e veta ne Supabase.
-
-Rrjedha:
-
-1. WordPress ben autentikimin
-2. market app merr token / code
-3. nje backend callback e verifikon
-4. backend gjen ose krijon perdoruesin perkates ne Supabase
-5. krijohet sesion ne market
-
-Ky variant ruan:
-
-- kontot ekzistuese te Gazeta Si
-- te dhenat e market-it ne Supabase
-- eksperience pa nderprerje ne login
-
-#### Variante me pak e rekomanduar
-
-Te tentohet perdorimi i cookie-ve te WordPress direkt ne market app.
-
-Kjo nuk sugjerohet sepse:
-
-- eshte me fragile
-- me veshtire per t'u siguruar
-- nuk shkallezohet mire
-- krijon varesi te forta mes dy sistemeve
-
-## 8. Cfare i duhet ekipit teknik per SSO
-
-### Ne WordPress
-
-Duhet:
-
-- plugin OAuth/OIDC server
-- konfigurim i `redirect URI`
-- konfigurim i `client id`
-- konfigurim i `scopes`
-- endpoint per `authorize`, `token`, dhe idealisht `userinfo`
-
-### Ne market app
-
-Duhet:
-
-- faqe e re login me `Hyr me Gazeta Si`
-- route `/auth/callback`
-- logjike per exchange te code -> session
-- ruajtje / krijim profili ne Supabase
-
-### Ne Supabase
-
-Duhet:
-
-- tabele per mapimin e identiteteve te jashtme, p.sh.:
+Ne Supabase shtoni nje tabele te re:
 
 ```sql
 create table if not exists public.external_accounts (
@@ -285,119 +350,131 @@ create table if not exists public.external_accounts (
 );
 ```
 
-Kjo lejon:
+Kjo tabele ben lidhjen:
 
-- lidhjen e nje llogarie WordPress me nje user ne market
-- hyrje te qendrueshme ne hyrjet e ardhshme
+- `external_user_id` nga WordPress
+- `user_id` nga Supabase
 
-## 9. Rrjedha e rekomanduar e implementimit
+Rrjedha e hyrjes:
 
-### Faza 1: Marrja ne dore e projektit
+1. user logon ne WordPress
+2. vjen ne market callback
+3. callback kontrollon nese ekziston `external_accounts`
+4. nese po, gjen user-in ekzistues
+5. nese jo, krijon user te ri ne Supabase
+6. krijon row ne `external_accounts`
+7. hap sesionin ne market
 
-1. klono repo-n
-2. krijo `.env` nga `.env.example`
-3. krijo projektin e ri Supabase
-4. bej `supabase link`
-5. bej `supabase db push`
-6. rigjenero `types.ts`
-7. starto aplikacionin me `npm install` dhe `npm run dev`
+## 17. Cfare duhet ne backend per SSO
 
-### Faza 2: Kalimi ne infrastrukturen e Gazeta Si
+Per SSO nuk mjafton vetem frontend.
 
-1. deploy frontend-in ne `market.gazetasi.al`
-2. vendos env vars ne platformen e deploy-it
-3. krijo te pakten nje admin
-4. verifiko krijimin e tregjeve nga `/admin`
+Duhet nje endpoint backend, p.sh.:
 
-### Faza 3: SSO me WordPress
+- `https://market.gazetasi.al/api/auth/wordpress/callback`
 
-1. zgjidh plugin-in OIDC/OAuth ne WordPress
-2. krijo aplikacion klient per market-in
-3. shto route callback ne market
-4. krijo tabele `external_accounts`
-5. ndrysho UX e login-it ne market
-6. testo hyrjen e qete nese perdoruesi eshte loguar ne `www.gazetasi.al`
+Ky backend ben:
 
-### Faza 4: Hardening para prodhimit
+1. shkembimin `code -> token`
+2. merr profilin e user-it nga WordPress
+3. kontrollon ose krijon user ne Supabase
+4. ruan mapimin ne `external_accounts`
+5. kthen user-in ne aplikacion me sesion aktiv
 
-1. verifiko RLS ne te gjitha tabelat
-2. kufizo rolet editor/admin
-3. vendos rate limiting
-4. vendos SMTP te dedikuar per email
-5. monitorim per error logs dhe auth failures
+Per kete pike do ju duhet:
 
-## 10. Komandat baze per ekipin e IT
+- `SUPABASE_SERVICE_ROLE_KEY`
 
-Install:
+Kjo **nuk** futet ne frontend. Kjo mbahet vetem ne backend ose ne server functions.
 
-```powershell
-npm install
-```
+## 18. Cfare duhet ndryshuar ne kod
 
-Start lokal:
+Pikat me te mundshme qe duhen prekur:
 
-```powershell
-npm run dev
-```
+- `src/pages/Auth.tsx`
+  - hiq login-in klasik dhe shto `Hyr me Gazeta Si`
+- `src/hooks/useAuth.tsx`
+  - ndrysho menyren si menaxhohet hyrja
+- `src/App.tsx`
+  - shto route per callback
 
-Build:
+Me shume gjasa do shtohen edhe:
 
-```powershell
-npm run build
-```
+- nje komponent i ri per butonin e login-it
+- nje callback page
+- nje endpoint backend per SSO
 
-Test:
+## 19. Rrjedha e rekomanduar e punes
 
-```powershell
-npm test
-```
+Punoni ne kete rend:
 
-Supabase link:
+### Faza 1
 
-```powershell
-npx supabase link --project-ref YOUR_PROJECT_REF
-```
+1. merrni repo-n
+2. lidhni Supabase-in e ri
+3. aplikoni migrimet
+4. verifikoni qe homepage punon
+5. krijoni nje admin
+6. verifikoni `/admin`
 
-Supabase migrations:
+### Faza 2
 
-```powershell
-npx supabase db push
-```
+1. deploy ne `market.gazetasi.al`
+2. vendosni env vars ne prodhim
+3. krijoni disa tregje prove
+4. testoni login normal dhe admin panel
 
-Types:
+### Faza 3
 
-```powershell
-npx supabase gen types typescript --linked --schema public > src/integrations/supabase/types.ts
-```
+1. konfiguroni plugin-in OAuth/OIDC ne WordPress
+2. shtoni callback route
+3. shtoni tabelen `external_accounts`
+4. ndertoni backend callback
+5. hiqni login-in klasik nga UI
+6. testoni nese user i loguar ne `www.gazetasi.al` futet direkt ne market
 
-## 11. Gjerat qe nuk duhen komituar
+## 20. Kontrolli final para prodhimit
 
-Mos duhen futur ne Git:
+Para launch-it kontrolloni:
+
+1. a punon homepage
+2. a hapen tregjet
+3. a funksionon vendosja e bastit
+4. a funksionon `/admin`
+5. a funksionon `article_url`
+6. a shfaqet aktiviteti live
+7. a funksionon login-i
+8. a funksionon SSO
+9. a nuk ka kredenciale sekrete ne repo
+
+## 21. Gjerat qe nuk duhen futur ne Git
+
+Kurre mos komitoni:
 
 - `.env`
 - `sb_secret_*`
 - `service_role`
 - `SUPABASE_ACCESS_TOKEN`
-- WordPress client secrets
-- SMTP credentials
+- `client_secret` te WordPress
+- `SMTP credentials`
 
 Repo-ja aktuale eshte pergatitur qe:
 
-- `.env` te jete i perjashtuar
-- `.env.example` te jete i ndare me ekipin
+- `.env` te mos perfshihet
+- `.env.example` te jete shembull
 
-## 12. Rekomandim final
+## 22. Rekomandimi perfundimtar
 
-Per Gazeta Si, kombinimi me i shendetshem eshte:
+Modeli me i mire per kete projekt eshte:
 
-1. `market.gazetasi.al` si frontend i prediction market
-2. `Supabase` si datastore dhe autorizim i roleve te market-it
-3. `WordPress` si identity source per perdoruesit e gazetasi.al
-4. `OAuth/OIDC + callback` si mekanizem SSO
+1. WordPress per gazetasi.al
+2. `market.gazetasi.al` si prediction market me kete kod
+3. Supabase per databaze dhe role
+4. WordPress si burim identiteti
+5. OAuth/OIDC per hyrje me te njejtin account
 
-Rezultati:
+Nese ndiqni kete rruge:
 
-- i njejti account ne te dy sistemet
-- eksperience e qete per perdoruesin
-- ndarje e paster mes CMS dhe market-it
-- menaxhim me i mire teknik afatgjate
+- do keni te njejtin user ne te dy produktet
+- eksperienca do duket si nje platforme e vetme
+- databaza e market-it do mbetet e paster dhe e menaxhueshme
