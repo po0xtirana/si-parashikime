@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 33% 98%;
+    --foreground: 222 28% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 28% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 28% 10%;
+
+    --primary: 222 28% 10%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 20% 95%;
+    --secondary-foreground: 222 15% 20%;
+
+    --muted: 210 20% 96%;
+    --muted-foreground: 220 10% 42%;
+
+    --accent: 210 18% 93%;
+    --accent-foreground: 222 28% 10%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 20% 90%;
+    --input: 214 20% 90%;
+    --ring: 222 28% 10%;
+
+    --radius: 0.75rem;
+
+    --success: 152 60% 36%;
+    --success-foreground: 0 0% 100%;
+    --danger: 0 65% 48%;
+    --danger-foreground: 0 0% 100%;
+
+    --font-serif: "Playfair Display", Georgia, serif;
+    --font-sans: "Inter", "Segoe UI", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", monospace;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 0 0% 20%;
+    --sidebar-primary: 0 0% 5%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 95%;
+    --sidebar-accent-foreground: 0 0% 20%;
+    --sidebar-border: 0 0% 90%;
+    --sidebar-ring: 0 0% 5%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    background-image:
+      radial-gradient(circle at top, rgba(255, 255, 255, 0.85), transparent 35%),
+      linear-gradient(180deg, rgba(244, 247, 251, 0.95) 0%, rgba(248, 250, 252, 1) 100%);
+    font-family: var(--font-sans);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-sans);
+  }
+
+  ::selection {
+    background: rgba(24, 24, 27, 0.12);
+  }
+}
+
+@layer utilities {
+  .font-serif {
+    font-family: var(--font-serif);
+  }
+
+  .font-sans {
+    font-family: var(--font-sans);
+  }
+
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+}
