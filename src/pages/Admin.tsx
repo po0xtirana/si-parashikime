@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { Constants } from "@/integrations/supabase/types";
-import { Shield, Plus, CheckCircle } from "lucide-react";
+import { Shield, Plus, CheckCircle, Copy, ExternalLink, Code2 } from "lucide-react";
 
 const categoryLabels: Record<string, string> = {
   Politics: "Politikë",
@@ -36,6 +36,7 @@ export default function Admin() {
   const [imageUrl, setImageUrl] = useState("");
   const [articleUrl, setArticleUrl] = useState("");
   const [creating, setCreating] = useState(false);
+  const baseUrl = useMemo(() => window.location.origin, []);
 
   if (loading) return null;
   if (!user || !isAdmin) return <Navigate to="/" replace />;
@@ -79,6 +80,20 @@ export default function Admin() {
   };
 
   const unresolvedMarkets = markets?.filter((m) => m.status !== "resolved") ?? [];
+  const copyText = async (text: string, label: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success(`${label} u kopjua.`);
+    } catch {
+      toast.error("Kopjimi nuk funksionoi. Provo perseri.");
+    }
+  };
+
+  const getEmbedUrl = (marketId: string) => `${baseUrl}/embed/market/${marketId}`;
+  const getIframeSnippet = (marketId: string) => {
+    const embedUrl = getEmbedUrl(marketId);
+    return `<iframe src="${embedUrl}" width="100%" height="360" style="border:0;overflow:hidden;" loading="lazy"></iframe>`;
+  };
 
   return (
     <div className="container py-8 max-w-4xl">
@@ -175,6 +190,59 @@ export default function Admin() {
             </div>
           )}
         </div>
+      </div>
+
+      <div className="mt-8 rounded-lg border border-border bg-card p-6">
+        <div className="mb-4 flex items-center gap-2">
+          <Code2 className="h-5 w-5" />
+          <h2 className="font-serif text-xl font-semibold">Embed ne WordPress</h2>
+        </div>
+        <p className="mb-5 text-sm leading-6 text-muted-foreground">
+          Per cdo treg me poshte mund te kopjoni linkun e embed-it ose snippet-in e plote `iframe`.
+          Ne WordPress, editori mund ta vendose ne nje bllok `Custom HTML` dhe karta do te shfaqet brenda artikullit.
+        </p>
+
+        {!markets || markets.length === 0 ? (
+          <p className="text-sm text-muted-foreground">Nuk ka ende tregje per t'u embed-uar.</p>
+        ) : (
+          <div className="space-y-3">
+            {markets.map((market) => {
+              const embedUrl = getEmbedUrl(market.id);
+              const iframeSnippet = getIframeSnippet(market.id);
+
+              return (
+                <div key={market.id} className="rounded-md border border-border p-4">
+                  <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                    <div className="min-w-0 space-y-2">
+                      <p className="text-sm font-semibold leading-6">{market.title}</p>
+                      <div className="space-y-1 text-xs text-muted-foreground">
+                        <p>Embed URL: <span className="font-mono text-foreground">{embedUrl}</span></p>
+                        <p>Perdor ne WordPress: `Custom HTML` block</p>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      <Button size="sm" variant="outline" onClick={() => copyText(embedUrl, "Linku i embed-it")}>
+                        <Copy className="mr-2 h-4 w-4" />
+                        Kopjo Linkun
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => copyText(iframeSnippet, "Iframe snippet")}>
+                        <Code2 className="mr-2 h-4 w-4" />
+                        Kopjo iframe
+                      </Button>
+                      <Button size="sm" variant="outline" asChild>
+                        <a href={embedUrl} target="_blank" rel="noreferrer">
+                          <ExternalLink className="mr-2 h-4 w-4" />
+                          Hap Embed-in
+                        </a>
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
