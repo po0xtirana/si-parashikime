@@ -19,6 +19,7 @@ export type Database = {
           amount: number
           created_at: string
           id: string
+          is_public: boolean
           market_id: string
           odds_at_time_of_bet: number
           payout: number | null
@@ -29,6 +30,7 @@ export type Database = {
           amount: number
           created_at?: string
           id?: string
+          is_public?: boolean
           market_id: string
           odds_at_time_of_bet: number
           payout?: number | null
@@ -39,6 +41,7 @@ export type Database = {
           amount?: number
           created_at?: string
           id?: string
+          is_public?: boolean
           market_id?: string
           odds_at_time_of_bet?: number
           payout?: number | null
@@ -215,7 +218,7 @@ export type Database = {
         Returns: boolean
       }
       place_bet: {
-        Args: { p_amount: number; p_market_id: string; p_prediction: boolean }
+        Args: { p_amount: number; p_is_public?: boolean; p_market_id: string; p_prediction: boolean }
         Returns: Json
       }
       resolve_market: {
@@ -224,7 +227,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "user"
+      app_role: "admin" | "editor" | "user"
       market_category:
         | "Politics"
         | "Sports"
@@ -360,7 +363,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "user"],
+      app_role: ["admin", "editor", "user"],
       market_category: [
         "Politics",
         "Sports",

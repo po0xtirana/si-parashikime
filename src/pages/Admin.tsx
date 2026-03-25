@@ -23,7 +23,7 @@ const categoryLabels: Record<string, string> = {
 };
 
 export default function Admin() {
-  const { user, isAdmin, loading } = useAuth();
+  const { user, isAdmin, isEditor, canManageMarkets, loading } = useAuth();
   const { data: markets } = useMarkets();
   const queryClient = useQueryClient();
 
@@ -39,7 +39,7 @@ export default function Admin() {
   const baseUrl = useMemo(() => window.location.origin, []);
 
   if (loading) return null;
-  if (!user || !isAdmin) return <Navigate to="/" replace />;
+  if (!user || !canManageMarkets) return <Navigate to="/" replace />;
 
   const createMarket = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,7 +99,12 @@ export default function Admin() {
     <div className="container py-8 max-w-4xl">
       <div className="flex items-center gap-2 mb-8">
         <Shield className="h-6 w-6" />
-        <h1 className="font-serif text-3xl font-bold">Paneli i Administratorit</h1>
+        <div>
+          <h1 className="font-serif text-3xl font-bold">Paneli Redaksional</h1>
+          <p className="text-sm text-muted-foreground">
+            {isAdmin ? "Akses administrator" : isEditor ? "Akses editori" : "Akses i kufizuar"}
+          </p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

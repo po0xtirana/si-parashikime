@@ -50,7 +50,14 @@ export default function Index() {
       const matchesCategory = category === "All" || market.category === category;
       const haystack = `${market.title} ${market.description ?? ""}`.toLowerCase();
       const matchesSearch = !searchQuery || haystack.includes(searchQuery);
-      return matchesCategory && matchesSearch;
+
+      const resolvedMoreThanOneDayAgo =
+        market.status === "resolved" &&
+        Date.now() - new Date(market.updated_at).getTime() >= 1000 * 60 * 60 * 24;
+
+      const shouldHideFromHomepage = !status && resolvedMoreThanOneDayAgo;
+
+      return matchesCategory && matchesSearch && !shouldHideFromHomepage;
     });
 
     if (status) {
@@ -65,7 +72,7 @@ export default function Index() {
 
       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     });
-  }, [category, markets, searchQuery]);
+  }, [category, markets, searchQuery, status]);
 
   const dashboardStats = useMemo(() => {
     const source = markets ?? [];
