@@ -32,6 +32,12 @@ const statuses = [
   { value: "resolved", label: "Zgjidhur" },
 ];
 
+const statusPriority: Record<string, number> = {
+  open: 0,
+  locked: 1,
+  resolved: 2,
+};
+
 export default function Index() {
   const [category, setCategory] = useState("All");
   const [status, setStatus] = useState("");
@@ -40,11 +46,24 @@ export default function Index() {
   const { data: markets, isLoading } = useMarkets(status || undefined);
 
   const filteredMarkets = useMemo(() => {
-    return (markets ?? []).filter((market) => {
+    const filtered = (markets ?? []).filter((market) => {
       const matchesCategory = category === "All" || market.category === category;
       const haystack = `${market.title} ${market.description ?? ""}`.toLowerCase();
       const matchesSearch = !searchQuery || haystack.includes(searchQuery);
       return matchesCategory && matchesSearch;
+    });
+
+    if (status) {
+      return filtered;
+    }
+
+    return [...filtered].sort((a, b) => {
+      const statusDelta = (statusPriority[a.status] ?? 99) - (statusPriority[b.status] ?? 99);
+      if (statusDelta !== 0) {
+        return statusDelta;
+      }
+
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     });
   }, [category, markets, searchQuery]);
 
